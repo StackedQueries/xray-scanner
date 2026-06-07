@@ -1,0 +1,148 @@
+{
+  "generatedBy": "scripts/coverage-check.ts",
+  "totalCatalogKeys": 546,
+  "covered": 546,
+  "missing": [],
+  "richCovered": 102,
+  "autoCovered": 444,
+  "curatedProbes": 20,
+  "totalProbes": 464,
+  "beyondCatalogClaims": [],
+  "byCategory": {
+    "anti-debug": {
+      "total": 24,
+      "rich": 0,
+      "auto": 24
+    },
+    "audio": {
+      "total": 25,
+      "rich": 7,
+      "auto": 18
+    },
+    "canvas": {
+      "total": 30,
+      "rich": 8,
+      "auto": 22
+    },
+    "css": {
+      "total": 9,
+      "rich": 3,
+      "auto": 6
+    },
+    "document": {
+      "total": 23,
+      "rich": 0,
+      "auto": 23
+    },
+    "dom-layout": {
+      "total": 11,
+      "rich": 4,
+      "auto": 7
+    },
+    "events": {
+      "total": 31,
+      "rich": 0,
+      "auto": 31
+    },
+    "extensions": {
+      "total": 10,
+      "rich": 0,
+      "auto": 10
+    },
+    "fonts": {
+      "total": 5,
+      "rich": 5,
+      "auto": 0
+    },
+    "headless-tells": {
+      "total": 39,
+      "rich": 3,
+      "auto": 36
+    },
+    "intl": {
+      "total": 11,
+      "rich": 4,
+      "auto": 7
+    },
+    "introspection": {
+      "total": 38,
+      "rich": 5,
+      "auto": 33
+    },
+    "math": {
+      "total": 24,
+      "rich": 8,
+      "auto": 16
+    },
+    "media": {
+      "total": 9,
+      "rich": 2,
+      "auto": 7
+    },
+    "media-capabilities": {
+      "total": 7,
+      "rich": 0,
+      "auto": 7
+    },
+    "navigator": {
+      "total": 73,
+      "rich": 13,
+      "auto": 60
+    },
+    "screen": {
+      "total": 13,
+      "rich": 7,
+      "auto": 6
+    },
+    "sensors": {
+      "total": 13,
+      "rich": 0,
+      "auto": 13
+    },
+    "speech": {
+      "total": 6,
+      "rich": 3,
+      "auto": 3
+    },
+    "storage": {
+      "total": 19,
+      "rich": 0,
+      "auto": 19
+    },
+    "svg": {
+      "total": 7,
+      "rich": 0,
+      "auto": 7
+    },
+    "timing": {
+      "total": 14,
+      "rich": 5,
+      "auto": 9
+    },
+    "wasm": {
+      "total": 18,
+      "rich": 0,
+      "auto": 18
+    },
+    "webgl": {
+      "total": 32,
+      "rich": 11,
+      "auto": 21
+    },
+    "webrtc": {
+      "total": 27,
+      "rich": 10,
+      "auto": 17
+    },
+    "window": {
+      "total": 23,
+      "rich": 5,
+      "auto": 18
+    },
+    "workers": {
+      "total": 10,
+      "rich": 4,
+      "auto": 6
+    }
+  }
+}
