@@ -95,7 +95,7 @@ npm run preview    # serve the built dist
 
 ## Coverage gate (proof, not assertion)
 
-`npm run coverage` (→ `scripts/coverage-check.ts`, also wired as `prebuild`) loads `ALL_APIS` and the probe registry and **fails the build** if any catalog key has no probe. Current state — **546 / 546 catalog keys covered (100%)**, 0 missing, via **13 curated deep probes** (81 keys) + **465 auto-probes**. Machine-readable detail in [`coverage.json`](coverage.json).
+`npm run coverage` (→ `scripts/coverage-check.ts`, also wired as `prebuild`) loads `ALL_APIS` and the probe registry and **fails the build** if any catalog key has no probe. Current state — **546 / 546 catalog keys covered (100%)**, 0 missing, via **20 curated deep probes** (102 keys) + **444 auto-probes** (464 probes total). Machine-readable detail in [`coverage.json`](coverage.json).
 
 Curated probes do real fingerprinting + lie/consistency checks; auto-probes generically resolve every remaining key to guarantee coverage. Per-category breakdown (`rich` = curated deep probe, `auto` = generic presence/value):
 
@@ -104,28 +104,28 @@ Curated probes do real fingerprinting + lie/consistency checks; auto-probes gene
 | `anti-debug` | 24 | 0 | 24 |
 | `audio` | 25 | 7 | 18 |
 | `canvas` | 30 | 8 | 22 |
-| `css` | 9 | 0 | 9 |
+| `css` | 9 | 3 | 6 |
 | `document` | 23 | 0 | 23 |
-| `dom-layout` | 11 | 1 | 10 |
+| `dom-layout` | 11 | 4 | 7 |
 | `events` | 31 | 0 | 31 |
 | `extensions` | 10 | 0 | 10 |
 | `fonts` | 5 | 5 | 0 |
 | `headless-tells` | 39 | 3 | 36 |
 | `intl` | 11 | 4 | 7 |
-| `introspection` | 38 | 3 | 35 |
+| `introspection` | 38 | 5 | 33 |
 | `math` | 24 | 8 | 16 |
-| `media` | 9 | 0 | 9 |
+| `media` | 9 | 2 | 7 |
 | `media-capabilities` | 7 | 0 | 7 |
-| `navigator` | 73 | 12 | 61 |
+| `navigator` | 73 | 13 | 60 |
 | `screen` | 13 | 7 | 6 |
 | `sensors` | 13 | 0 | 13 |
-| `speech` | 6 | 0 | 6 |
+| `speech` | 6 | 3 | 3 |
 | `storage` | 19 | 0 | 19 |
 | `svg` | 7 | 0 | 7 |
 | `timing` | 14 | 5 | 9 |
 | `wasm` | 18 | 0 | 18 |
 | `webgl` | 32 | 11 | 21 |
-| `webrtc` | 27 | 3 | 24 |
+| `webrtc` | 27 | 10 | 17 |
 | `window` | 23 | 5 | 18 |
 | `workers` | 10 | 4 | 6 |
 
