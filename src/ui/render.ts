@@ -4,7 +4,8 @@ import type { StabilityReport } from "../persistence.js";
 import type { IdentityReport, IdentityVerdict } from "../identity.js";
 import { LAYERS } from "../layers.js";
 import { entry } from "../catalog.js";
-import { resultJson } from "../runner.js";
+import { resultJson, scoreOf } from "../runner.js";
+import type { ScoreResult } from "../scoring.js";
 import { hashPairs } from "../hash.js";
 import { crossReference, type XrefReport } from "../scriptXref.js";
 
@@ -436,13 +437,17 @@ function trunc(s: string, n: number): string {
   return s.length > n ? s.slice(0, n - 1) + "…" : s;
 }
 
-export function render(root: HTMLElement, res: RunResult, stability: StabilityReport, identity: IdentityReport, handlers: Handlers): void {
+export function render(root: HTMLElement, res: RunResult, stability: StabilityReport, identity: IdentityReport, stabilityScore: number | null, handlers: Handlers): void {
   root.innerHTML = "";
+  const sc = scoreOf(res, stabilityScore);
 
   const header = el("header", "header");
   header.append(el("div", "breadcrumb", "xray-scanner — catalog-driven fingerprint / bot-detection probe"));
   header.append(el("h1", undefined, "X-Ray Scanner"));
   header.append(el("p", "sub", `Probes every surface in the script2builtins catalog. ${res.stats.probes} probes · ${res.stats.rows} surfaces measured.`));
+
+  // Headline stealth score — higher = harder to detect. Hard-fails cap it low.
+  header.append(scoreChip(sc));
 
   const stats = el("div", "stats");
   stats.append(stat("fingerprint", res.fingerprint));
@@ -512,6 +517,49 @@ export function render(root: HTMLElement, res: RunResult, stability: StabilityRe
   const footer = el("footer", "footer");
   footer.append(el("p", undefined, "Run this in a real browser and your bot, then diff the JSON. Catalog: script2builtins-knowledge."));
   root.append(footer);
+}
+
+// Headline stealth score panel: the big number, a tone band, the hard-fail
+// list (what capped it), and per-layer detectability bars.
+function scoreChip(sc: ScoreResult): HTMLElement {
+  const tone = sc.stealthScore >= 80 ? "good" : sc.stealthScore >= 50 ? "warn" : "bad";
+  const panel = el("div", `score-panel tone-${tone}`);
+
+  const head = el("div", "score-head");
+  const big = el("div", "score-big mono", String(sc.stealthScore));
+  head.append(big);
+  const meta = el("div", "score-meta");
+  meta.append(el("div", "score-title", "stealth score"));
+  meta.append(el("div", "score-sub", sc.hardFails.length ? `capped — ${sc.hardFails.length} hard automation tell${sc.hardFails.length === 1 ? "" : "s"}` : "higher = harder to detect"));
+  if (sc.stabilityScore !== null) meta.append(el("div", "score-sub", `reload stability ${sc.stabilityScore}%`));
+  head.append(meta);
+  panel.append(head);
+
+  if (sc.hardFails.length) {
+    const hf = el("div", "score-hardfails");
+    hf.append(el("span", "score-hf-label", "hard-fails:"));
+    for (const k of sc.hardFails) hf.append(el("span", "chip hf", k));
+    panel.append(hf);
+  }
+
+  const layers = Object.entries(sc.byLayer).sort((a, b) => b[1] - a[1]);
+  if (layers.length) {
+    const max = Math.max(...layers.map(([, v]) => v));
+    const bars = el("div", "score-bars");
+    for (const [layer, v] of layers) {
+      const b = el("div", "score-bar-row");
+      b.append(el("span", "score-bar-label mono", layer));
+      const track = el("div", "score-bar-track");
+      const fill = el("div", "score-bar-fill");
+      fill.style.width = `${Math.round((v / max) * 100)}%`;
+      track.append(fill);
+      b.append(track);
+      b.append(el("span", "score-bar-val mono", String(Math.round(v * 10) / 10)));
+      bars.append(b);
+    }
+    panel.append(bars);
+  }
+  return panel;
 }
 
 function stat(label: string, value: string, tone?: string): HTMLElement {

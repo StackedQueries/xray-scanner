@@ -4,6 +4,7 @@ import { hashPairs, fnv1a } from "./hash.js";
 import { layerForCategory } from "./layers.js";
 import { entry } from "./catalog.js";
 import { runCoherence, coherenceVerdict, type CoherenceCheck } from "./coherence.js";
+import { score, SCORE_SCHEMA_VERSION, type ScoreResult } from "./scoring.js";
 
 export interface RunResult {
   rows: ProbeRow[];
@@ -169,12 +170,20 @@ export async function runAll(): Promise<RunResult> {
   };
 }
 
+/** Compute the stealth/detectability score for a run (stabilityScore filled in by the caller if known). */
+export function scoreOf(r: RunResult, stabilityScore: number | null = null): ScoreResult {
+  return score({ rows: r.rows, coherenceScore: r.coherenceScore, signals: r.signals }, stabilityScore);
+}
+
 /** The full result as a plain object (for JSON output / ?json mode). */
-export function resultObject(r: RunResult): Record<string, unknown> {
+export function resultObject(r: RunResult, stabilityScore: number | null = null): Record<string, unknown> {
+  const sc = scoreOf(r, stabilityScore);
   return {
     fingerprint: r.fingerprint,
     fpIdLong: r.diagnostics.fpIdLong,
     coherenceScore: r.coherenceScore,
+    score: sc,
+    scoreSchemaVersion: sc.scoreSchemaVersion,
     diagnostics: {
       lies: r.diagnostics.lies,
       errors: r.diagnostics.errors,
@@ -204,12 +213,14 @@ export function resultObject(r: RunResult): Record<string, unknown> {
 }
 
 /** The deterministic, copy-pasteable result blob. */
-export function resultJson(r: RunResult): string {
+export function resultJson(r: RunResult, stabilityScore: number | null = null): string {
   return JSON.stringify(
     {
       fingerprint: r.fingerprint,
       fpIdLong: r.diagnostics.fpIdLong,
       coherenceScore: r.coherenceScore,
+      score: scoreOf(r, stabilityScore),
+      scoreSchemaVersion: SCORE_SCHEMA_VERSION,
       diagnostics: {
         lies: r.diagnostics.lies,
         errors: r.diagnostics.errors,

@@ -11,6 +11,7 @@
     "build": "tsc -p tsconfig.json --noEmit && vite build",
     "preview": "vite preview",
     "coverage": "tsx scripts/coverage-check.ts",
+    "test": "tsx tests/scoring.test.ts",
     "prebuild": "npm run coverage"
   },
   "devDependencies": {

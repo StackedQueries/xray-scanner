@@ -1,0 +1,19 @@
+{
+  "_comment": "Calibration anchor: a clean real-user Chrome run. No automation tells, full coherence. Expected stealthScore >= 90 (SPEC §10.1).",
+  "coherenceScore": 100,
+  "signals": {
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+    "webdriver": false,
+    "webdriverGetterPatched": false,
+    "getEventListeners": false,
+    "toStringPatched": false,
+    "automationResidue": "",
+    "chromePresent": true
+  },
+  "rows": [
+    { "key": "navigator.webdriver", "verdict": "pass", "severity": "high", "botDetectionTell": true, "layer": "L3" },
+    { "key": "navigator.plugins", "verdict": "pass", "severity": "low", "botDetectionTell": true, "layer": "L1a" },
+    { "key": "window.chrome", "verdict": "info", "severity": "info", "botDetectionTell": false, "layer": "L3" },
+    { "key": "*.toDataURL", "verdict": "pass", "severity": "medium", "botDetectionTell": true, "layer": "L1a" }
+  ]
+}

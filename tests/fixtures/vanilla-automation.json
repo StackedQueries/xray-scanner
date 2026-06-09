@@ -1,0 +1,19 @@
+{
+  "_comment": "Calibration anchor: a vanilla automation run (e.g. plain Playwright/CDP launch). navigator.webdriver leaks + CDP residue. Expected >=1 hard-fail and stealthScore <= hardCap (15) (SPEC §10.1).",
+  "coherenceScore": 75,
+  "signals": {
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 HeadlessChrome",
+    "webdriver": true,
+    "webdriverGetterPatched": false,
+    "getEventListeners": true,
+    "toStringPatched": false,
+    "automationResidue": "",
+    "chromePresent": true
+  },
+  "rows": [
+    { "key": "navigator.webdriver", "verdict": "bot", "severity": "high", "botDetectionTell": true, "layer": "L3" },
+    { "key": "getEventListeners", "verdict": "bot", "severity": "high", "botDetectionTell": true, "layer": "L3" },
+    { "key": "navigator.plugins", "verdict": "suspect", "severity": "low", "botDetectionTell": true, "layer": "L1a" },
+    { "key": "navigator.languages", "verdict": "suspect", "severity": "medium", "botDetectionTell": true, "layer": "L1a" }
+  ]
+}

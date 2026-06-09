@@ -116,3 +116,25 @@ details.cat-group[open] { padding-bottom: 6px; }
   .row { grid-template-columns: 1fr 1fr; }
   .c-sev, .c-tell, .c-layer { display: none; }
 }
+
+/* ── stealth score panel (P0) ─────────────────────────────────────────── */
+.score-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin: 8px 0 16px; }
+.score-panel.tone-good { border-color: var(--pass); }
+.score-panel.tone-warn { border-color: var(--suspect); }
+.score-panel.tone-bad { border-color: var(--bot); }
+.score-head { display: flex; align-items: center; gap: 18px; }
+.score-big { font-size: 48px; font-weight: 700; line-height: 1; }
+.tone-good .score-big { color: var(--pass); }
+.tone-warn .score-big { color: var(--suspect); }
+.tone-bad .score-big { color: var(--bot); }
+.score-title { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text); }
+.score-sub { font-size: 12px; color: var(--muted); }
+.score-hardfails { margin-top: 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.score-hf-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.chip.hf { color: var(--bot); border-color: var(--bot); }
+.score-bars { margin-top: 14px; display: grid; gap: 6px; }
+.score-bar-row { display: grid; grid-template-columns: 40px 1fr 44px; align-items: center; gap: 10px; }
+.score-bar-label { font-size: 11px; color: var(--muted); }
+.score-bar-track { height: 6px; background: var(--panel2); border-radius: 999px; overflow: hidden; }
+.score-bar-fill { height: 100%; background: var(--suspect); }
+.score-bar-val { font-size: 11px; color: var(--muted); text-align: right; }
