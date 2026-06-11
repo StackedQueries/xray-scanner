@@ -8,7 +8,7 @@ import { navigatorProbe } from "./probes/navigator.js";
 import { automationProbe } from "./probes/automation.js";
 import { cssMediaProbe } from "./probes/cssmedia.js";
 import { workerProbe } from "./probes/worker.js";
-import { screenProbe, intlProbe, timingProbe, mathProbe } from "./probes/misc.js";
+import { screenProbe, permissionsProbe, intlProbe, timingProbe, mathProbe } from "./probes/misc.js";
 import { webrtcNetworkProbe, mediaDevicesProbe } from "./probes/network.js";
 import { featuresProbe, domrectProbe, speechProbe, batteryProbe, errorEngineProbe, computedStyleProbe } from "./probes/extras.js";
 
@@ -21,6 +21,7 @@ export const CURATED_PROBES: Probe[] = [
   navigatorProbe,
   automationProbe,
   screenProbe,
+  permissionsProbe,
   intlProbe,
   timingProbe,
   mathProbe,

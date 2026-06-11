@@ -9,12 +9,57 @@ export const screenProbe: Probe = {
   run(): ProbeRow[] {
     const s = screen;
     const rows: ProbeRow[] = [];
-    rows.push(rowFromCatalog("screen.width", { surface: "screen WxH / avail", value: `${s.width}x${s.height}, avail ${s.availWidth}x${s.availHeight}`, present: true, signal: { name: "screen", value: `${s.width}x${s.height}` } }));
+    // Headless screen tell: a real desktop reserves space for OS chrome (taskbar /
+    // menu-bar / dock), so avail* < screen*. Headless reports avail == full, and
+    // Chromium headless defaults to 800x600. Either is a strong headless signal.
+    const noOsChrome = s.availWidth === s.width && s.availHeight === s.height;
+    const defaultHeadless = s.width === 800 && s.height === 600;
+    const headlessScreen = noOsChrome || defaultHeadless;
+    rows.push(rowFromCatalog("screen.width", {
+      surface: "screen WxH / avail",
+      value: `${s.width}x${s.height}, avail ${s.availWidth}x${s.availHeight}`,
+      present: true,
+      verdict: headlessScreen ? "bot" : "pass",
+      note: headlessScreen ? (defaultHeadless ? "800x600 — Chromium headless default" : "screen.avail == full screen — no OS chrome (headless tell)") : undefined,
+      signal: { name: "screen", value: `${s.width}x${s.height}` },
+    }));
+    rows.push(rowFromCatalog("screen.availWidth", { surface: "screen.availWidth vs width", value: `${s.availWidth} / ${s.width}`, present: true, verdict: noOsChrome ? "bot" : "pass", note: noOsChrome ? "availWidth == width — no OS chrome reserved (headless)" : undefined, signal: { name: "availMatchesFull", value: noOsChrome } }));
     rows.push(rowFromCatalog("screen.colorDepth", { surface: "colorDepth / pixelDepth", value: `${s.colorDepth} / ${s.pixelDepth}`, present: true, verdict: s.colorDepth < 24 ? "suspect" : "info", note: s.colorDepth < 24 ? "low color depth — VM tell" : undefined, signal: { name: "colorDepth", value: s.colorDepth } }));
     rows.push(rowFromCatalog("devicePixelRatio", { surface: "devicePixelRatio", value: String(devicePixelRatio), present: true, signal: { name: "dpr", value: devicePixelRatio } }));
     rows.push(rowFromCatalog("innerWidth", { surface: "inner / outer", value: `inner ${innerWidth}x${innerHeight}, outer ${outerWidth}x${outerHeight}`, present: true, verdict: outerWidth === 0 || outerHeight === 0 ? "bot" : "info", note: outerWidth === 0 ? "outer dimensions 0 — headless" : undefined, signal: { name: "outer", value: `${outerWidth}x${outerHeight}` } }));
     rows.push(rowFromCatalog("screen.orientation", { surface: "screen.orientation.type", value: s.orientation?.type ?? "(absent)", present: !!s.orientation }));
-    for (const k of ["screen.height", "screen.availWidth", "screen.availHeight", "screen.pixelDepth", "outerWidth"]) rows.push(rowFromCatalog(k, { surface: k, value: "measured", present: true }));
+    for (const k of ["screen.height", "screen.availHeight", "screen.pixelDepth", "outerWidth"]) rows.push(rowFromCatalog(k, { surface: k, value: "measured", present: true }));
+    return rows;
+  },
+};
+
+/** Permissions / Notification coherence — a production headless detector that
+ * FingerprintJS BotD ships: headless Chrome reports `Notification.permission ===
+ * 'denied'` while `Permissions.query({name:'notifications'})` returns `'prompt'`,
+ * an impossible pairing for a real headed browser. (RESEARCH wgeqneq0q: high
+ * confidence, second-most-reliable signal after WebGL.) */
+export const permissionsProbe: Probe = {
+  id: "permissions",
+  keys: ["Notification.permission", "navigator.permissions"],
+  async run(): Promise<ProbeRow[]> {
+    const rows: ProbeRow[] = [];
+    const hasNotif = typeof Notification !== "undefined";
+    const notif = hasNotif ? Notification.permission : "(absent)";
+    let state = "(unavailable)";
+    try {
+      const st = await navigator.permissions.query({ name: "notifications" as PermissionName });
+      state = st.state;
+    } catch { /* query unsupported / blocked */ }
+    const mismatch = notif === "denied" && state === "prompt";
+    rows.push(rowFromCatalog("Notification.permission", {
+      surface: "Notification.permission vs Permissions.query",
+      value: `permission=${notif}, query=${state}`,
+      present: hasNotif,
+      verdict: mismatch ? "bot" : "info",
+      note: mismatch ? "permission 'denied' but Permissions.query 'prompt' — impossible in a real browser → HeadlessChrome (FingerprintJS BotD)" : undefined,
+      signal: { name: "notifPermMismatch", value: mismatch },
+    }));
+    rows.push(rowFromCatalog("navigator.permissions", { surface: "navigator.permissions", value: typeof navigator.permissions !== "undefined" ? "present" : "(absent)", present: typeof navigator.permissions !== "undefined" }));
     return rows;
   },
 };

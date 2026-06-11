@@ -3,10 +3,10 @@
   "totalCatalogKeys": 546,
   "covered": 546,
   "missing": [],
-  "richCovered": 102,
-  "autoCovered": 444,
-  "curatedProbes": 20,
-  "totalProbes": 464,
+  "richCovered": 104,
+  "autoCovered": 442,
+  "curatedProbes": 21,
+  "totalProbes": 463,
   "beyondCatalogClaims": [],
   "byCategory": {
     "anti-debug": {
@@ -76,8 +76,8 @@
     },
     "media": {
       "total": 9,
-      "rich": 2,
-      "auto": 7
+      "rich": 3,
+      "auto": 6
     },
     "media-capabilities": {
       "total": 7,
@@ -86,8 +86,8 @@
     },
     "navigator": {
       "total": 73,
-      "rich": 13,
-      "auto": 60
+      "rich": 14,
+      "auto": 59
     },
     "screen": {
       "total": 13,

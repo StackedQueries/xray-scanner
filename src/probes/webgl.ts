@@ -20,18 +20,21 @@ export const webglProbe: Probe = {
       const cv = document.createElement("canvas");
       const gl = (cv.getContext("webgl2") || cv.getContext("webgl")) as WebGLRenderingContext | null;
       if (!gl) {
-        rows.push(rowFromCatalog("*.getParameter", { surface: "WebGL", value: "no context", present: false, verdict: "suspect", note: "WebGL unavailable — common in headless/VM" }));
+        // No WebGL context at all — headless / --disable-gpu. A real headed browser
+        // exposes a GL context, so this is a strong bot signal (not just suspect).
+        rows.push(rowFromCatalog("*.getParameter", { surface: "WebGL", value: "no context", present: false, verdict: "bot", note: "no WebGL context — headless / GPU disabled", signal: { name: "webglContext", value: false } }));
         return rows;
       }
       const dbg = gl.getExtension("WEBGL_debug_renderer_info");
       const vendor = dbg ? String(gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL)) : "(masked)";
       const renderer = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : "(masked)";
+      const software = /swiftshader|llvmpipe|software|mesa offscreen|microsoft basic/i.test(renderer);
       rows.push(rowFromCatalog("*.getExtension", {
         surface: "WebGL UNMASKED_VENDOR / RENDERER",
         value: `${vendor} — ${renderer}`,
         present: true,
-        verdict: /swiftshader|llvmpipe|software|mesa offscreen/i.test(renderer) ? "suspect" : "info",
-        note: /swiftshader|llvmpipe|software/i.test(renderer) ? "software renderer — strong headless/VM tell" : undefined,
+        verdict: software ? "bot" : "info",
+        note: software ? "software renderer (SwiftShader/llvmpipe) — strong headless/VM tell" : undefined,
         signal: { name: "webglRenderer", value: renderer },
       }));
 
